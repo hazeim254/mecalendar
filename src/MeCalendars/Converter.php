@@ -43,23 +43,47 @@ class Converter {
      * Julian day
      * @var integer
      */
-    protected $jd = 0;
+    protected $firstJDay = 0;
+
+    /**
+     * Julian day
+     * @var integer
+     */
+    protected $lastJDay = 0;
+
+    /**
+     * Year to convert
+     * @var integer
+     */
+    protected $year = null;
+
+    /**
+     * Month to convert
+     * @var integer
+     */
+    protected $month = null;
+
+    /**
+     * Day to convert
+     * @var integer
+     */
+    protected $day = null;
 
     //</editor-fold>
 
     /**
-     * @param integer $year Year
-     * @param integer $month Month 
-     * @param integer $day Day
+     * @param integer $year Year to convert
      * @param integer $type One of the constants representing calendar type
+     * @param integer $month Month to convert. If the value of the parameters is null it will convert year only
+     * @param integer $day Day to convert. If the value of the parameters is null it will convert year and month only
      */
-    public function __construct($year, $month, $day, $type = self::GREGORIAN) {
+    public function __construct($year, $type = self::GREGORIAN, $month = null, $day = null) {
         $this->year = $year;
         $this->month = $month;
         $this->day = $day;
         $this->type = $type;
 
-        $this->jd = $this->toJD();
+        $this->toJD();
     }
 
     /**
@@ -72,13 +96,13 @@ class Converter {
      * @return integer Julian day corresponding to Hijri date
      */
     protected function hijriToJD($year = null, $month = null, $day = null) {
-        $year = is_null($year)? $this->year : $year;
-        $month = is_null($month)? $this->month : $month;
-        $day = is_null($day)? $this->day : $day;
-        
-        $jd = ($day + ceil(29.5 * ($month - 1)) + 
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
+
+        $jd = ($day + ceil(29.5 * ($month - 1)) +
                 ($year - 1) * 354 + floor((3 + 11 * $year) / 30) + 1948439.5) - 1;
-        
+
         return $jd;
     }
 
@@ -90,25 +114,24 @@ class Converter {
      * @param type $day Persian Day
      * 
      * @return integer Julian day corresponding to Persian date
-     */    
+     */
     protected function persianToJD($year = null, $month = null, $day = null) {
-        $year = is_null($year)? $this->year : $year;
-        $month = is_null($month)? $this->month : $month;
-        $day = is_null($day)? $this->day : $day;
-        
-		$epochBase = $year - ($year >= 0? 474 : 473);
-		$epochYear = 474 + ($epochBase % 2820);
-		
-		if ($month <= 7) {
-			$factor = ($month - 1) * 31;
-		} else {
-			$factor = (($month - 1) * 30) + 6;
-		}
-		
-		$jd = $day + $factor + floor(($epochYear * 682 - 110) / 2816) + ($epochYear - 1) * 365
-				+ floor($epochBase / 2820) * 1029983 + (1948321 - 1);
-		
-		return $jd;
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
+
+        $epochBase = $year - ($year >= 0 ? 474 : 473);
+        $epochYear = 474 + ($epochBase % 2820);
+
+        if ($month <= 7) {
+            $factor = ($month - 1) * 31;
+        } else {
+            $factor = (($month - 1) * 30) + 6;
+        }
+
+        $jd = $day + $factor + floor(($epochYear * 682 - 110) / 2816) + ($epochYear - 1) * 365 + floor($epochBase / 2820) * 1029983 + (1948321 - 1);
+
+        return $jd;
     }
 
     /**
@@ -121,9 +144,9 @@ class Converter {
      * @return integer Julian day corresponding to Jewish date
      */
     protected function jewishToJD($year = null, $month = null, $day = null) {
-        $year = is_null($year)? $this->year : $year;
-        $month = is_null($month)? $this->month : $month;
-        $day = is_null($day)? $this->day : $day;
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
 
         return jewishtojd($month, $day, $year);
     }
@@ -138,31 +161,66 @@ class Converter {
      * @return integer Julian day corresponding to Gregorian date
      */
     protected function gregorianToJD($year = null, $month = null, $day = null) {
-        $year = is_null($year)? $this->year : $year;
-        $month = is_null($month)? $this->month : $month;
-        $day = is_null($day)? $this->day : $day;
-        
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
+
         $jd = gregoriantojd($month, $day, $year);
         return $jd;
     }
 
     /**
      * Converts the date according to the primary type
-     */    
+     */
     protected function toJD() {
         switch ($this->type) {
             case self::HIJRI:
-                return $this->hijriToJD();
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->hijriToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->hijriToJD($this->year, 12, 29);
+                } elseif (is_null($this->month)) {
+                    $this->firstJDay = $this->hijriToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->hijriToJD($this->year, $this->month, 29);
+                } else {
+                    $this->firstJDay = $this->hijriToJD();
+                }
                 break;
             case self::PERSIAN:
-                return $this->persianToJD();
+                $monthDays = [0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->persianToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->persianToJD($this->year, 12, 29);
+                } elseif (is_null($this->day)) {
+                    $this->firstJDay = $this->persianToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->persianToJD($this->year, $this->month, $monthDays[$this->month]);
+                } else {
+                    $this->firstJDay = $this->persianToJD();
+                }
                 break;
             case self::JEWISH:
-                return $this->jewishToJD();
+                $monthDays = [0, 30, 29, 29, 29, 30, 30, 30, 29, 30, 29, 30, 29];
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->jewishToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->jewishToJD($this->year, 12, 29);
+                } elseif (is_null($this->day)) {
+                    $this->firstJDay = $this->jewishToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->jewishToJD($this->year, $this->month, $monthDays[$this->month]);
+                } else {
+                    $this->firstJDay = $this->jewishToJD();
+                }
                 break;
             case self::GREGORIAN:
             default:
-                return $this->gregorianToJD();
+                $monthDays = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->gregorianToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->gregorianToJD($this->year, 12, 31);
+                } elseif (is_null($this->day)) {
+                    $this->firstJDay = $this->gregorianToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->gregorianToJD($this->year, $this->month, $monthDays[$this->month]);
+                } else {
+                    $this->firstJDay = $this->gregorianToJD();
+                }
                 break;
         }
     }
@@ -176,14 +234,14 @@ class Converter {
         if (self::HIJRI == $this->type) {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
-        
-        $year = floor((30 * ($this->jd - 1948439.5) + 10646) / 10631);
-        $month = min(12, ceil(($this->jd - (29 + $this->hijriToJD($year, 1, 1))) / 29) + 1);
-        $day = $this->jd - $this->hijriToJD($year, $month, 1) + 1;
-        
+
+        $year = floor((30 * ($this->firstJDay - 1948439.5) + 10646) / 10631);
+        $month = min(12, ceil(($this->firstJDay - (29 + $this->hijriToJD($year, 1, 1))) / 29) + 1);
+        $day = $this->firstJDay - $this->hijriToJD($year, $month, 1) + 1;
+
         return compact('year', 'month', 'day');
     }
-    
+
     /**
      * Get the Persian date corressponding to the current date
      * 
@@ -193,30 +251,30 @@ class Converter {
         if (self::PERSIAN == $this->type) {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
-		
-		$epoch = $this->jd - $this->persianToJD(475, 1, 1);
-		$cycle = floor($epoch / 1029983);
-		$cannee = $epoch % 1029983;
-		if ($cannee == 1029982) {
-			$ycycle = 2820;
-		} else {
-			$aux1 = floor($cannee / 366);
-			$aux2 = $cannee % 366;
-			$ycycle = floor(($aux1 * 2134 + 2816 * $aux2 + 2815) / 1028522) + $aux1 + 1;
-		}
-		
-		$year = $ycycle + (2820 * $cycle) + 474;
-		if ($year <= 0) {
-			--$year;
-		}
-		
-		$yday = $this->jd - $this->persianToJD($year, 1, 1) + 1;
-		$month = $yday > 186? ceil($yday / 31) : ceil(($yday - 6) / 30);
-		$day = $this->jd - $this->persianToJD($year, $month, 1) + 1;
-		
-		return compact('year', 'month', 'day');
+
+        $epoch = $this->firstJDay - $this->persianToJD(475, 1, 1);
+        $cycle = floor($epoch / 1029983);
+        $cannee = $epoch % 1029983;
+        if ($cannee == 1029982) {
+            $ycycle = 2820;
+        } else {
+            $aux1 = floor($cannee / 366);
+            $aux2 = $cannee % 366;
+            $ycycle = floor(($aux1 * 2134 + 2816 * $aux2 + 2815) / 1028522) + $aux1 + 1;
+        }
+
+        $year = $ycycle + (2820 * $cycle) + 474;
+        if ($year <= 0) {
+            --$year;
+        }
+
+        $yday = $this->firstJDay - $this->persianToJD($year, 1, 1) + 1;
+        $month = $yday > 186 ? ceil($yday / 31) : ceil(($yday - 6) / 30);
+        $day = $this->firstJDay - $this->persianToJD($year, $month, 1) + 1;
+
+        return compact('year', 'month', 'day');
     }
-    
+
     /**
      * Get the Jewish date corressponding to the current date
      * 
@@ -227,10 +285,10 @@ class Converter {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
 
-        list($month, $day, $year) = explode('/', jdtojewish($this->jd));
+        list($month, $day, $year) = explode('/', jdtojewish($this->firstJDay));
         return compact('year', 'month', 'day');
     }
-    
+
     /**
      * Get the Gregorian date corressponding to the current date
      * 
@@ -241,16 +299,17 @@ class Converter {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
 
-        list($month, $day, $year) = explode('/', jdtogregorian($this->jd));
+        list($month, $day, $year) = explode('/', jdtogregorian($this->firstJDay));
         return compact('year', 'month', 'day');
     }
-    
+
     /**
      * Get the Julian Day corresponding to the input date
      * 
      * @return integer the Julain day corresponding to the input date
      */
     public function getJulianDay() {
-        return $this->jd;
+        return $this->firstJDay;
     }
+
 }
