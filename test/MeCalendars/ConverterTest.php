@@ -63,6 +63,33 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($gregMonth, $gregDate['month'], 'Invalid month');
         $this->assertEquals($gregDay, $gregDate['day'], 'Invalid day');
     }
+    
+    function testGregToHijriYear() {
+        $year = 2013;
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $hijri = $conv->getHijriDate();
+        
+        $this->assertEquals('1434-1435', $hijri['year']);
+    }
 
+    function testHijriToGregYearMonth() {
+        $year = 2013;
+        $month = 12;
+        
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $hijri = $conv->getHijriDate();
+        
+        $this->assertEquals('1435', $hijri['year']);
+        $this->assertEquals('1-2', $hijri['month']);
+    }
+    
+    function testHijriToGregYear() {
+        $year = 1435;
+        
+        $conv = new Converter($year, Converter::HIJRI);
+        $greg = $conv->getGregorianDate();
+        
+        $this->assertEquals('2013-2014', $greg['year']);
+    }
 }
 

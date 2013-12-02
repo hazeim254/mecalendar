@@ -235,11 +235,31 @@ class Converter {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
 
-        $year = floor((30 * ($this->firstJDay - 1948439.5) + 10646) / 10631);
-        $month = min(12, ceil(($this->firstJDay - (29 + $this->hijriToJD($year, 1, 1))) / 29) + 1);
-        $day = $this->firstJDay - $this->hijriToJD($year, $month, 1) + 1;
+        $y = floor((30 * ($this->firstJDay - 1948439.5) + 10646) / 10631);
+        $year = [$y];
+        $month = [];
+        $day = null;
+        if (!is_null($this->month)) {
+            $m = min(12, ceil(($this->firstJDay - (29 + $this->hijriToJD($y, 1, 1))) / 29) + 1);
+            $month[] = $m;
+        }
 
-        return compact('year', 'month', 'day');
+        if (!is_null($this->day)) {
+            $day = $this->firstJDay - $this->hijriToJD($y, $m, 1) + 1;
+        }
+
+        if ($this->lastJDay) {
+            $y = floor((30 * ($this->lastJDay - 1948439.5) + 10646) / 10631);
+            if ($year[0] !== $y) {
+                $year[] = $y;
+            }
+            if (!is_null($this->month)) {
+                $m = min(12, ceil(($this->lastJDay - (29 + $this->hijriToJD($y, 1, 1))) / 29) + 1);
+                $month[] = $m;
+            }
+        }
+
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
 
     /**
@@ -299,8 +319,28 @@ class Converter {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
 
-        list($month, $day, $year) = explode('/', jdtogregorian($this->firstJDay));
-        return compact('year', 'month', 'day');
+        list($m, $day, $y) = explode('/', jdtogregorian($this->firstJDay));
+        $year = [$y];
+        $month = [];
+        if (!is_null($this->month)) {
+            $month[] = $m;
+        }
+        if (is_null($this->day)) {
+            $day = null;
+        }
+
+        if ($this->lastJDay) {
+            list($m, $d, $y) = explode('/', jdtogregorian($this->lastJDay));
+            if ($year[0] !== $y) {
+                $year[] = $y;
+            }
+            if (!is_null($this->month)) {
+                if ($month[0] !== $m) {
+                    $month[] = $m;
+                }
+            }
+        }
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
 
     /**
@@ -313,3 +353,4 @@ class Converter {
     }
 
 }
+
