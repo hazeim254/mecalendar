@@ -412,8 +412,12 @@ class Converter {
      * @return integer the Julain day corresponding to the input date
      */
     public function getJulianDay() {
-        return $this->firstJDay;
+        $jd = $this->firstJDay;
+        if ($this->lastJDay) {
+            $jd .= '-' . $this->lastJDay;
+        }
+        
+        return $jd;
     }
-
 }
 
