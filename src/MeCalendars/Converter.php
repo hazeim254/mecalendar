@@ -305,8 +305,30 @@ class Converter {
             return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
         }
 
-        list($month, $day, $year) = explode('/', jdtojewish($this->firstJDay));
-        return compact('year', 'month', 'day');
+        list($m, $d, $y) = explode('/', jdtojewish($this->firstJDay));
+        $year = [$y]; $month = []; $day = $d;
+        if (!is_null($this->month)) {
+            $month = [$m];
+        }
+        
+        if (!is_null($this->day)) {
+            $day = $d;
+        }
+        
+        if ($this->lastJDay) {
+            list($m, $d, $y) = explode('/', jdtojewish($this->lastJDay));
+            if ($year[0] != $y) {
+                $year[] = $y;
+            }
+            
+            if (!is_null($this->month)) {
+                if ($month[0] !== $m) {
+                    $month[] = $m;
+                }
+            }
+        }
+        
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
 
     /**

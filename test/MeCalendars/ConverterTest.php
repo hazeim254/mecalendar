@@ -24,21 +24,20 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($hijri['month'], 1, 'Invalid Hijri Month :(');
     }
 
-    function testHijriToGreg() {
+    public function testHijriToGreg() {
         $converter = new Converter(1435, Converter::HIJRI, 1, 16);
         $gregorian = $converter->getGregorianDate();
         $this->assertEquals(2013, $gregorian['year'], 'Wrong gregorian year :(');
         $this->assertEquals(11, $gregorian['month'], 'Wrong gregorian month :\'(');
     }
 
-    function testJewishToGreg() {
+    public function testJewishToGreg() {
         $gregYear = 2013;
         $gregMonth = 11;
         $gregDay = 20;
 
         $jewConverter = new Converter($gregYear, Converter::GREGORIAN, $gregMonth, $gregDay);
         $jewDate = $jewConverter->getJewishDate();
-
         $gregConverter = new Converter($jewDate['year'], Converter::JEWISH, $jewDate['month'], $jewDate['day']);
         $gregDate = $gregConverter->getGregorianDate();
 
@@ -47,7 +46,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($gregDay, $gregDate['day'], 'Invalid day');
     }
 
-    function testPersianToGreg() {
+    public function testPersianToGreg() {
         $gregYear = 2013;
         $gregMonth = 11;
         $gregDay = 20;
@@ -64,15 +63,25 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($gregDay, $gregDate['day'], 'Invalid day');
     }
     
-    function testGregToHijriYear() {
+    public function testGregToHijriYear() {
         $year = 2013;
         $conv = new Converter($year, Converter::GREGORIAN);
         $hijri = $conv->getHijriDate();
         
         $this->assertEquals('1434-1435', $hijri['year']);
     }
+    
+    public function testGregToHijriYearMonth() {
+        $year = 2013;
+        $month = 12;
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $hijri = $conv->getHijriDate();
+        
+        $this->assertEquals('1435', $hijri['year']);
+        $this->assertEquals('1-2', $hijri['month']);
+    }
 
-    function testHijriToGregYearMonth() {
+    public function testHijriToGregYearMonth() {
         $year = 2013;
         $month = 12;
         
@@ -83,7 +92,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('1-2', $hijri['month']);
     }
     
-    function testHijriToGregYear() {
+    public function testHijriToGregYear() {
         $year = 1435;
         
         $conv = new Converter($year, Converter::HIJRI);
@@ -91,5 +100,55 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         
         $this->assertEquals('2013-2014', $greg['year']);
     }
+    
+    public function testJewishToGregYear() {
+        $year = 5774;
+        
+        $conv = new Converter($year, Converter::JEWISH);
+        $greg = $conv->getGregorianDate();
+        
+        $this->assertEquals('2013-2014', $greg['year']);
+    }
+    
+    /**
+     * @skipped
+     */
+    public function testJewishToGregYearMonth() {
+        $year = 5774;
+        $month = 3;
+        
+        $conv = new Converter($year, Converter::JEWISH, $month);
+        $jewish = $conv->getGregorianDate();
+        
+        $this->assertEquals('2013', $jewish['year']);
+        $this->assertEquals('11-12', $jewish['month']);
+    }
+    
+    /**
+     * @skipped
+     */
+    public function testGregToJewishYear() {
+        $year = 2013;
+        
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $greg = $conv->getJewishDate();
+        
+        $this->assertEquals('5773-5774', $greg['year']);
+    }
+
+    /**
+     * @skipped
+     */
+    public function testGregToJewishYearMonth() {
+        $year = 2013;
+        $month = 12;
+        
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $hijri = $conv->getJewishDate();
+        
+        $this->assertEquals('5774', $hijri['year']);
+        $this->assertEquals('3-4', $hijri['month']);
+    }
+    
 }
 
