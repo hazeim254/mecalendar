@@ -283,16 +283,55 @@ class Converter {
             $ycycle = floor(($aux1 * 2134 + 2816 * $aux2 + 2815) / 1028522) + $aux1 + 1;
         }
 
-        $year = $ycycle + (2820 * $cycle) + 474;
-        if ($year <= 0) {
-            --$year;
+        $y = $ycycle + (2820 * $cycle) + 474;
+        if ($y <= 0) {
+            --$y;
+        }
+        $year = [$y];
+        $month = [];
+        $day = null;
+
+        if (!is_null($this->month)) {
+            $yday = $this->firstJDay - $this->persianToJD($y, 1, 1) + 1;
+            $m = $yday > 186 ? ceil($yday / 31) : ceil(($yday - 6) / 30);
+            $month = [$m];
+            
+            if (!is_null($this->day)) {
+                $day = $this->firstJDay - $this->persianToJD($y, $m, 1) + 1;
+            }
         }
 
-        $yday = $this->firstJDay - $this->persianToJD($year, 1, 1) + 1;
-        $month = $yday > 186 ? ceil($yday / 31) : ceil(($yday - 6) / 30);
-        $day = $this->firstJDay - $this->persianToJD($year, $month, 1) + 1;
+        if ($this->lastJDay) {
+            $epoch = $this->lastJDay - $this->persianToJD(475, 1, 1);
+            $cycle = floor($epoch / 1029983);
+            $cannee = $epoch % 1029983;
+            if ($cannee == 1029982) {
+                $ycycle = 2820;
+            } else {
+                $aux1 = floor($cannee / 366);
+                $aux2 = $cannee % 366;
+                $ycycle = floor(($aux1 * 2134 + 2816 * $aux2 + 2815) / 1028522) + $aux1 + 1;
+            }
 
-        return compact('year', 'month', 'day');
+            $y = $ycycle + (2820 * $cycle) + 474;
+            if ($y <= 0) {
+                --$y;
+            }
+
+            if ($year[0] !== $y) {
+                $year[] = $y;
+            }
+
+            if (!is_null($this->month)) {
+                $yday = $this->lastJDay - $this->persianToJD($y, 1, 1) + 1;
+                $m = $yday > 186 ? ceil($yday / 31) : ceil(($yday - 6) / 30);
+                if ($month[0] !== $m) {
+                    $month[] = $m;
+                }
+            }
+        }
+
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
 
     /**
@@ -306,28 +345,30 @@ class Converter {
         }
 
         list($m, $d, $y) = explode('/', jdtojewish($this->firstJDay));
-        $year = [$y]; $month = []; $day = $d;
+        $year = [$y];
+        $month = [];
+        $day = $d;
         if (!is_null($this->month)) {
             $month = [$m];
         }
-        
+
         if (!is_null($this->day)) {
             $day = $d;
         }
-        
+
         if ($this->lastJDay) {
             list($m, $d, $y) = explode('/', jdtojewish($this->lastJDay));
             if ($year[0] != $y) {
                 $year[] = $y;
             }
-            
+
             if (!is_null($this->month)) {
                 if ($month[0] !== $m) {
                     $month[] = $m;
                 }
             }
         }
-        
+
         return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
 

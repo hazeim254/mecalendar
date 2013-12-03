@@ -144,11 +144,56 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $month = 12;
         
         $conv = new Converter($year, Converter::GREGORIAN, $month);
-        $hijri = $conv->getJewishDate();
+        $jewish = $conv->getJewishDate();
         
-        $this->assertEquals('5774', $hijri['year']);
-        $this->assertEquals('3-4', $hijri['month']);
+        $this->assertEquals('5774', $jewish['year']);
+        $this->assertEquals('3-4', $jewish['month']);
     }
     
+    public function testPersianToGregYear() {
+        $year = 1392;
+        
+        $conv = new Converter($year, Converter::PERSIAN);
+        $greg = $conv->getGregorianDate();
+        
+        $this->assertEquals('2013-2014', $greg['year']);
+    }
+    
+    public function testPersianToGregYearMonth() {
+        $year = 1392;
+        $month = 8;
+        
+        $conv = new Converter($year, Converter::PERSIAN, $month);
+        $jewish = $conv->getGregorianDate();
+        
+        $this->assertEquals('2013', $jewish['year']);
+        $this->assertEquals('10-11', $jewish['month']);
+    }
+    
+    /**
+     * @skipped
+     */
+    public function testGregToPerianYear() {
+        $year = 2013;
+        
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $greg = $conv->getPersianDate();
+        
+        $this->assertEquals('1391-1392', $greg['year']);
+    }
+
+    /**
+     * @skipped
+     */
+    public function testGregToPersianYearMonth() {
+        $year = 2013;
+        $month = 12;
+        
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $jewish = $conv->getPersianDate();
+        
+        $this->assertEquals('1392', $jewish['year']);
+        $this->assertEquals('9-10', $jewish['month']);
+    }
 }
 
