@@ -195,5 +195,72 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('1392', $jewish['year']);
         $this->assertEquals('9-10', $jewish['month']);
     }
+    
+    public function testCopticToGreg(){
+        $year = 1730;
+        $month = 3;
+        $day = 25;
+        
+        $conv = new Converter($year, Converter::COPTIC, $month, $day);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals(12, $greg['month']);
+        $this->assertEquals(4, $greg['day']);
+    }
+    
+    public function testCopticToGregYear(){
+        $year = 1730;
+        
+        $conv = new Converter($year, Converter::COPTIC);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals('2013-2014', $greg['year']);
+    }
+    
+    public function testCopticToGregYearMonth(){
+        $year = 1730;
+        $month = 3;
+        
+        $conv = new Converter($year, Converter::COPTIC, $month);
+        $greg = $conv->getGregorianDate();
+        
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals('11-12', $greg['month']);
+    }
+    
+    public function testGregToCoptic() {
+//        $this->markTestIncomplete('getCopticDate is not implemented yet');
+        
+        $year = 2013; $month = 12; $day = 31;
+        $conv = new Converter($year, Converter::GREGORIAN, $month, $day);
+        $copt = $conv->getCopticDate();
+        
+        $this->assertEquals('1730', $copt['year']);
+        $this->assertEquals('4', $copt['month']);
+        $this->assertEquals('22', $copt['day']);
+    }
+    
+    public function testGregToCopticYear() {
+//        $this->markTestIncomplete('getCopticDate is not implemented yet');
+        
+        $year = 2013;
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $copt = $conv->getCopticDate();
+
+        $this->assertEquals('1729-1730', $copt['year']);
+    }
+    
+    public function testGregToCopticYearMonth() {
+//        $this->markTestIncomplete('getCopticDate is not implemented yet');
+        
+        $year = 2013; $month = 12;
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $copt = $conv->getCopticDate();
+        
+        $this->assertEquals('1730', $copt['year']);
+        $this->assertEquals('3-4', $copt['month']);
+        
+    }
 }
 
