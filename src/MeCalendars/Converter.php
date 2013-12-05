@@ -207,7 +207,7 @@ class Converter {
                 if (is_null($this->month)) {
                     $this->firstJDay = $this->hijriToJD($this->year, 1, 1);
                     $this->lastJDay = $this->hijriToJD($this->year, 12, 29);
-                } elseif (is_null($this->month)) {
+                } elseif (is_null($this->day)) {
                     $this->firstJDay = $this->hijriToJD($this->year, $this->month, 1);
                     $this->lastJDay = $this->hijriToJD($this->year, $this->month, 29);
                 } else {

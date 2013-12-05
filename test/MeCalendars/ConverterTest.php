@@ -118,14 +118,14 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
      * @group Hijri
      */
     public function testHijriToGregYearMonth() {
-        $year = 2013;
-        $month = 12;
+        $year = 1435;
+        $month = 1;
 
-        $conv = new Converter($year, Converter::GREGORIAN, $month);
-        $hijri = $conv->getHijriDate();
+        $conv = new Converter($year, Converter::HIJRI, $month);
+        $greg = $conv->getGregorianDate();
 
-        $this->assertEquals('1435', $hijri['year']);
-        $this->assertEquals('1-2', $hijri['month']);
+        $this->assertEquals('2013', $greg['year']);
+        $this->assertEquals('11-12', $greg['month']);
     }
 
     /**
