@@ -113,7 +113,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals('2013-2014', $greg['year']);
     }
-    
+
     /**
      * @group Hijri
      */
@@ -311,6 +311,168 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals('1730', $copt['year']);
         $this->assertEquals('3-4', $copt['month']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testLibyanToGreg() {
+        $year = 1381;
+        $month = 12;
+        $day = 9;
+
+        $conv = new Converter($year, Converter::LIBYAN, $month, $day);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals(12, $greg['month']);
+        $this->assertEquals(9, $greg['day']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testLibyanToGregYear() {
+        $year = 1381;
+
+        $conv = new Converter($year, Converter::LIBYAN);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals('2013', $greg['year']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testLibyanToGregYearMonth() {
+        $year = 1381;
+        $month = 12;
+
+        $conv = new Converter($year, Converter::LIBYAN, $month);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals(12, $greg['month']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testGregToLibyan() {
+        $year = 2013;
+        $month = 12;
+        $day = 31;
+        $conv = new Converter($year, Converter::GREGORIAN, $month, $day);
+        $liby = $conv->getLibyanDate();
+
+        $this->assertEquals('1381', $liby['year']);
+        $this->assertEquals('12', $liby['month']);
+        $this->assertEquals('31', $liby['day']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testGregToLibyanYear() {
+        $year = 2013;
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $liby = $conv->getLibyanDate();
+
+        $this->assertEquals(1381, $liby['year']);
+    }
+
+    /**
+     * @group Libyan
+     */
+    public function testGregToLibyanYearMonth() {
+        $year = 2013;
+        $month = 12;
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $liby = $conv->getLibyanDate();
+
+        $this->assertEquals(1381, $liby['year']);
+        $this->assertEquals(12, $liby['month']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testLibyanMiladyToGreg() {
+        $year = 1443;
+        $month = 12;
+        $day = 9;
+
+        $conv = new Converter($year, Converter::LIBYAN_MILADY, $month, $day);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals(12, $greg['month']);
+        $this->assertEquals(9, $greg['day']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testLibyanMiladyToGregYear() {
+        $year = 1443;
+
+        $conv = new Converter($year, Converter::LIBYAN_MILADY);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals('2013', $greg['year']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testLibyanMiladyToGregYearMonth() {
+        $year = 1443;
+        $month = 12;
+
+        $conv = new Converter($year, Converter::LIBYAN_MILADY, $month);
+        $greg = $conv->getGregorianDate();
+
+        $this->assertEquals(2013, $greg['year']);
+        $this->assertEquals(12, $greg['month']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testGregToLibyanMilady() {
+        $year = 2013;
+        $month = 12;
+        $day = 31;
+        $conv = new Converter($year, Converter::GREGORIAN, $month, $day);
+        $liby = $conv->getLibyanMiladyDate();
+
+        $this->assertEquals('1443', $liby['year']);
+        $this->assertEquals('12', $liby['month']);
+        $this->assertEquals('31', $liby['day']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testGregToLibyanMiladyYear() {
+        $year = 2013;
+        $conv = new Converter($year, Converter::GREGORIAN);
+        $liby = $conv->getLibyanMiladyDate();
+
+        $this->assertEquals(1443, $liby['year']);
+    }
+
+    /**
+     * @group LibyanMilady
+     */
+    public function testGregToLibyanMiladyYearMonth() {
+        $year = 2013;
+        $month = 12;
+        $conv = new Converter($year, Converter::GREGORIAN, $month);
+        $liby = $conv->getLibyanMiladyDate();
+
+        $this->assertEquals(1443, $liby['year']);
+        $this->assertEquals(12, $liby['month']);
     }
 
 }

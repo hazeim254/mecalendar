@@ -40,6 +40,16 @@ class Converter {
     const COPTIC = 5;
 
     /**
+     * Represents Libyan date
+     */
+    const LIBYAN = 6;
+
+    /**
+     * Represents Libyan milady date
+     */
+    const LIBYAN_MILADY = 7;
+
+    /**
      * Represents Julian Day 
      */
     const JD = 0;
@@ -157,7 +167,7 @@ class Converter {
     }
 
     /**
-     * Converts Persian date to a Gregorian Day
+     * Converts Gregorian date to a Julain Day
      * 
      * @param type $year Gregorian Year
      * @param type $month Gregorian Month
@@ -174,6 +184,51 @@ class Converter {
         return $jd;
     }
 
+    /**
+     * Converts Libyan Milday date to a Julian Day
+     * 
+     * @param type $year Gregorian Year
+     * @param type $month Gregorian Month
+     * @param type $day Gregorian Day
+     * 
+     * @return integer Julian day corresponding to Gregorian date
+     */
+    protected function libyanToJD($year = null, $month = null, $day = null) {
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
+
+        $jd = gregoriantojd($month, $day, $year + 632);
+        return $jd;
+    }
+
+    /**
+     * Converts Libyan Milday date to a Julian Day
+     * 
+     * @param type $year Libyan Year
+     * @param type $month Libyan Month
+     * @param type $day Libyan Day
+     * 
+     * @return integer Julian day corresponding to Gregorian date
+     */
+    protected function libyanMiladyToJD($year = null, $month = null, $day = null) {
+        $year = is_null($year) ? $this->year : $year;
+        $month = is_null($month) ? $this->month : $month;
+        $day = is_null($day) ? $this->day : $day;
+
+        $jd = gregoriantojd($month, $day, $year + 570);
+        return $jd;
+    }
+
+    /**
+     * Converts Coptic date to Julian day
+     * 
+     * @param type $year Coptic year
+     * @param type $month Coptic month
+     * @param type $day Coptic day
+     * 
+     * @return integer
+     */
     protected function copticToJD($year = null, $month = null, $day = null) {
         $year = is_null($year) ? $this->year : $year;
         $month = is_null($month) ? $this->month : $month;
@@ -248,6 +303,30 @@ class Converter {
                     $this->lastJDay = $this->copticToJD($this->year, $this->month, $monthDays[$this->month]);
                 } else {
                     $this->firstJDay = $this->copticToJD();
+                }
+                break;
+            case self::LIBYAN:
+                $monthDays = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->libyanToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->libyanToJD($this->year, 12, $monthDays[12]);
+                } elseif (is_null($this->day)) {
+                    $this->firstJDay = $this->libyanToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->libyanToJD($this->year, $this->month, $monthDays[$this->month]);
+                } else {
+                    $this->firstJDay = $this->libyanToJD();
+                }
+                break;
+            case self::LIBYAN_MILADY:
+                $monthDays = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+                if (is_null($this->month)) {
+                    $this->firstJDay = $this->libyanMiladyToJD($this->year, 1, 1);
+                    $this->lastJDay = $this->libyanMiladyToJD($this->year, 12, $monthDays[12]);
+                } elseif (is_null($this->day)) {
+                    $this->firstJDay = $this->libyanMiladyToJD($this->year, $this->month, 1);
+                    $this->lastJDay = $this->libyanMiladyToJD($this->year, $this->month, $monthDays[$this->month]);
+                } else {
+                    $this->firstJDay = $this->libyanMiladyToJD();
                 }
                 break;
             case self::GREGORIAN:
@@ -503,6 +582,78 @@ class Converter {
 
         if ($this->lastJDay) {
             list($m, $d, $y) = explode('/', jdtogregorian($this->lastJDay));
+            if ($year[0] !== $y) {
+                $year[] = $y;
+            }
+            if (!is_null($this->month)) {
+                if ($month[0] !== $m) {
+                    $month[] = $m;
+                }
+            }
+        }
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
+    }
+    
+     /**
+     * Get the Libyan date corressponding to the current date
+     * 
+     * @return array associative array contains converted Gregorian date keys are 'year', 'month', 'day'
+     */
+    public function getLibyanDate() {
+        if (self::LIBYAN == $this->type) {
+            return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
+        }
+
+        list($m, $day, $y) = explode('/', jdtogregorian($this->firstJDay));
+        $y -= 632;
+        $year = [$y];
+        $month = [];
+        if (!is_null($this->month)) {
+            $month[] = $m;
+        }
+        if (is_null($this->day)) {
+            $day = null;
+        }
+
+        if ($this->lastJDay) {
+            list($m, $d, $y) = explode('/', jdtogregorian($this->lastJDay));
+            $y -= 632;
+            if ($year[0] !== $y) {
+                $year[] = $y;
+            }
+            if (!is_null($this->month)) {
+                if ($month[0] !== $m) {
+                    $month[] = $m;
+                }
+            }
+        }
+        return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
+    }
+    
+     /**
+     * Get the Libyan Milady date corressponding to the current date
+     * 
+     * @return array associative array contains converted Gregorian date keys are 'year', 'month', 'day'
+     */
+    public function getLibyanMiladyDate() {
+        if (self::LIBYAN == $this->type) {
+            return ['year' => $this->year, 'month' => $this->month, 'day' => $this->day];
+        }
+
+        list($m, $day, $y) = explode('/', jdtogregorian($this->firstJDay));
+        $y -= 570;
+        $year = [$y];
+        $month = [];
+        if (!is_null($this->month)) {
+            $month[] = $m;
+        }
+        if (is_null($this->day)) {
+            $day = null;
+        }
+
+        if ($this->lastJDay) {
+            list($m, $d, $y) = explode('/', jdtogregorian($this->lastJDay));
+            $y -= 570;
             if ($year[0] !== $y) {
                 $year[] = $y;
             }
