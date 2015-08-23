@@ -1,8 +1,8 @@
 <?php
 
-namespace MeCalendars;
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-require_once dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'MeCalendars' . DIRECTORY_SEPARATOR . 'Converter.php';
+use MeCalendars\Converter;
 
 class ConverterTest extends \PHPUnit_Framework_TestCase {
 
@@ -476,4 +476,3 @@ class ConverterTest extends \PHPUnit_Framework_TestCase {
     }
 
 }
-

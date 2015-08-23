@@ -3,13 +3,13 @@
 namespace MeCalendars;
 
 /**
- * Middle East Calendars Converter is used to convert between some popular 
+ * Middle East Calendars Converter is used to convert between some popular
  * calendars used in middle east
- * 
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @author Hazem Mohamed
- * 
- * @todo Add suuport for Copteic date
+ *
+ * @license http://opensource.org/licenses/mit-license.php GNU Public License
+ * @author Hazem Mohamed <hazeim254@gmail.com>
+ *
+ * @todo Add suuport for Coptic date
  */
 class Converter {
     //<editor-fold defaultstate="collapsed" desc="Variables Declaration">
@@ -50,7 +50,7 @@ class Converter {
     const LIBYAN_MILADY = 7;
 
     /**
-     * Represents Julian Day 
+     * Represents Julian Day
      */
     const JD = 0;
 
@@ -103,11 +103,11 @@ class Converter {
 
     /**
      * Converts Hijri date to a Julian Day
-     * 
+     *
      * @param type $year Hijri Year
      * @param type $month Hijri Month
      * @param type $day Hijri Day
-     * 
+     *
      * @return integer Julian day corresponding to Hijri date
      */
     protected function hijriToJD($year = null, $month = null, $day = null) {
@@ -123,11 +123,11 @@ class Converter {
 
     /**
      * Converts Persian date to a Julian Day
-     * 
+     *
      * @param type $year Persian Year
      * @param type $month Perisan Month
      * @param type $day Persian Day
-     * 
+     *
      * @return integer Julian day corresponding to Persian date
      */
     protected function persianToJD($year = null, $month = null, $day = null) {
@@ -151,11 +151,11 @@ class Converter {
 
     /**
      * Converts Jewish date to a Julian Day
-     * 
+     *
      * @param type $year Jewish Year
      * @param type $month Jewish Month
      * @param type $day Jewish Day
-     * 
+     *
      * @return integer Julian day corresponding to Jewish date
      */
     protected function jewishToJD($year = null, $month = null, $day = null) {
@@ -168,11 +168,11 @@ class Converter {
 
     /**
      * Converts Gregorian date to a Julain Day
-     * 
+     *
      * @param type $year Gregorian Year
      * @param type $month Gregorian Month
      * @param type $day Gregorian Day
-     * 
+     *
      * @return integer Julian day corresponding to Gregorian date
      */
     protected function gregorianToJD($year = null, $month = null, $day = null) {
@@ -186,11 +186,11 @@ class Converter {
 
     /**
      * Converts Libyan Milday date to a Julian Day
-     * 
+     *
      * @param type $year Gregorian Year
      * @param type $month Gregorian Month
      * @param type $day Gregorian Day
-     * 
+     *
      * @return integer Julian day corresponding to Gregorian date
      */
     protected function libyanToJD($year = null, $month = null, $day = null) {
@@ -204,11 +204,11 @@ class Converter {
 
     /**
      * Converts Libyan Milday date to a Julian Day
-     * 
+     *
      * @param type $year Libyan Year
      * @param type $month Libyan Month
      * @param type $day Libyan Day
-     * 
+     *
      * @return integer Julian day corresponding to Gregorian date
      */
     protected function libyanMiladyToJD($year = null, $month = null, $day = null) {
@@ -222,11 +222,11 @@ class Converter {
 
     /**
      * Converts Coptic date to Julian day
-     * 
+     *
      * @param type $year Coptic year
      * @param type $month Coptic month
      * @param type $day Coptic day
-     * 
+     *
      * @return integer
      */
     protected function copticToJD($year = null, $month = null, $day = null) {
@@ -347,7 +347,7 @@ class Converter {
 
     /**
      * Get the Hijri date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Hijri date keys are 'year', 'month', 'day'
      */
     public function getHijriDate() {
@@ -384,7 +384,7 @@ class Converter {
 
     /**
      * Get the Persian date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Persian date keys are 'year', 'month', 'day'
      */
     public function getPersianDate() {
@@ -456,7 +456,7 @@ class Converter {
 
     /**
      * Get the Jewish date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Jewish date keys are 'year', 'month', 'day'
      */
     public function getJewishDate() {
@@ -494,7 +494,7 @@ class Converter {
 
     /**
      * Get the Coptic date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Coptic date keys are 'year', 'month', 'day'
      */
     public function getCopticDate() {
@@ -562,7 +562,7 @@ class Converter {
 
     /**
      * Get the Gregorian date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Gregorian date keys are 'year', 'month', 'day'
      */
     public function getGregorianDate() {
@@ -593,10 +593,10 @@ class Converter {
         }
         return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
-    
+
      /**
      * Get the Libyan date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Gregorian date keys are 'year', 'month', 'day'
      */
     public function getLibyanDate() {
@@ -629,10 +629,10 @@ class Converter {
         }
         return ['year' => implode('-', $year), 'month' => implode('-', $month), 'day' => $day];
     }
-    
+
      /**
      * Get the Libyan Milady date corressponding to the current date
-     * 
+     *
      * @return array associative array contains converted Gregorian date keys are 'year', 'month', 'day'
      */
     public function getLibyanMiladyDate() {
@@ -668,7 +668,7 @@ class Converter {
 
     /**
      * Get the Julian Day corresponding to the input date
-     * 
+     *
      * @return integer the Julain day corresponding to the input date
      */
     public function getJulianDay() {
@@ -681,4 +681,3 @@ class Converter {
     }
 
 }
-

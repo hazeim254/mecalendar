@@ -1,0 +1,22 @@
+{
+    "name": "hazem/mecalendar",
+    "description": "A library to convert between Middle Eastern calendars including Hijri, Gregorian, Persian, Hebrew",
+    "type": "Library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hazem Mohamed",
+            "email": "hazeim254@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+       "phpunit/phpunit" : "dev-master"
+   },
+   "autoload": {
+       "psr-4" : {
+           "MeCalendars\\" : "src"
+       }
+   }
+}
