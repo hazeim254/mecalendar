@@ -1,6 +1,6 @@
 <?php
 
-namespace MeCalendars;
+namespace MeCalendar;
 
 /**
  * Middle East Calendars Converter is used to convert between some popular

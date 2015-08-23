@@ -2,7 +2,7 @@
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-use MeCalendars\Converter;
+use MeCalendar\Converter;
 
 class ConverterTest extends \PHPUnit_Framework_TestCase {
 
