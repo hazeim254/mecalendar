@@ -1,5 +1,4 @@
-mecalendar
-==========
+#MeCalendars
 
 A date converter for common calendars used in Middle East. The converter includes the following calendars
 
